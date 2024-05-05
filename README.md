@@ -76,7 +76,7 @@ ssh root@159.223.148.167
 - npm install
 - pm2 start index.js
 
-#### Feel free to customize the instructions and commands according to your specific deployment requirements and environment.
+#### Accomplished this project as per the project requirements and instructions
 
 #### Author: Vignesh Babu Rajendran
 #### Course: ITIS 6177 - System Integration - Final Project
