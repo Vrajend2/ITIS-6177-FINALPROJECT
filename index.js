@@ -6,6 +6,30 @@ const fs = require('fs');
 const { AzureKeyCredential, DocumentAnalysisClient } = require("@azure/ai-form-recognizer");
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
+const CryptoJS = require('crypto-js');
+
+// Load environment variables from .env file
+require('dotenv').config();
+
+// Function to decrypt an encrypted value
+function decryptValue(encryptedValue, secretKey) {
+    const bytes = CryptoJS.AES.decrypt(encryptedValue, secretKey);
+    const decryptedValue = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedValue;
+}
+
+// Retrieve the encrypted values from environment variables
+const encryptedEndpoint = process.env.DOCUMENT_INTELLIGENCE_ENDPOINT;
+const encryptedApiKey = process.env.DOCUMENT_INTELLIGENCE_API_KEY;
+
+// Decrypt the values using the secret key
+const secretKey = 'your_secret_key_here'; // Replace with your actual secret key
+const decryptedEndpoint = decryptValue(encryptedEndpoint, secretKey);
+const decryptedApiKey = decryptValue(encryptedApiKey, secretKey);
+
+// Now you can use the decrypted values in your application
+const documentAnalysisClient = new DocumentAnalysisClient(decryptedEndpoint, new AzureKeyCredential(decryptedApiKey));
+
 
 const app = express();
 
@@ -23,8 +47,8 @@ const upload = multer({ dest: 'html/uploads/' });
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
-      title: 'AI Document Intelligence',
-      description: 'Azure AI Document Intelligence - Simple text extraction',
+      title: 'Azure AI Document Intelligence - Simple text extraction',
+      description: 'Authored by Vignesh Babu Rajendran for ITIS 6177 - System Integration - Final Project',
       version: '1.0.0'
     },
     servers: [{
@@ -32,15 +56,11 @@ const swaggerOptions = {
       description: 'Project server'
     }]
   },
-  // Specify the file that contains your route definitions
-  apis: ['index.js'] 
+  // Specify the file(s) that contain your route definitions and annotations
+  apis: ['index.js'] // Assuming 'index.js' contains your route definitions
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
-// Azure AI Document Intelligence endpoint and API key
-const documentIntelligenceEndpoint = 'https://vigneshformrecognizer.cognitiveservices.azure.com/';
-const documentIntelligenceApiKey = '0fd78bfe90944f0685fb7004f7914577';
 
 // Serve Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -48,7 +68,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Route to handle file upload and text extraction
 /**
  * @swagger
- * /extractText:
+ * /textExtract:
  *   post:
  *     summary: Simple text extraction
  *     consumes:
@@ -58,7 +78,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *         name: file
  *         type: file
  *         required: true
- *         description: File to be processed
+ *         description: Choose File to extract text
  *     responses:
  *       '200':
  *         description: Operation successful
@@ -72,9 +92,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *                   properties:
  *                     content:
  *                       type: string
- *                       description: Text extracted text from the file
+ *                       description: Text extracted from the file
  */
-app.post('/extractText', upload.single('file'), async (req, res) => {
+
+// Route to handle file upload and text extraction
+app.post('/textExtract', upload.single('file'), async (req, res) => {
     // Get the uploaded file from the request
     const file = req.file;
 
@@ -88,7 +110,7 @@ app.post('/extractText', upload.single('file'), async (req, res) => {
 
         // Perform text extraction using Azure AI Document Intelligence
         const fileStream = fs.createReadStream(filePath);
-        const documentAnalysisClient = new DocumentAnalysisClient(documentIntelligenceEndpoint, new AzureKeyCredential(documentIntelligenceApiKey));
+        const documentAnalysisClient = new DocumentAnalysisClient(decryptedEndpoint, new AzureKeyCredential(decryptedApiKey));
         const poller = await documentAnalysisClient.beginAnalyzeDocument("prebuilt-read", fileStream);
         const { content } = await poller.pollUntilDone();
 

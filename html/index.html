@@ -1,162 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azure AI Document Intelligence - Text Extraction</title>
     <!-- Bootstrap CSS -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-      .output-container {
-        margin-top: 20px;
-      }
-      .spinner-border-container {
-        display: none;
-      }
-      /* Custom styles for header and footer */
-      header {
-        background-color: #285902b6;
-        color: rgb(240, 235, 232);
-        padding: 10px 0;
-      }
-      footer {
-        background-color: #f8f9fa;
-        padding: 10px 0;
-        margin-top: auto;
-      }
-      .student-info {
-        background-color: #f0f0f0;
-        padding: 10px;
-        margin-bottom: 20px;
-      }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8f9fa; /* Light gray background */
+            color: #333; /* Dark text color */
+        }
+        .output-container {
+            margin-top: 20px;
+        }
+        .spinner-border-container {
+            display: none;
+        }
+        /* Custom styles for header and footer */
+        header {
+            background-color: #285902; /* Dark green header */
+            color: #fff; /* White text color */
+            padding: 20px 0; /* Increased padding for header */
+            margin-bottom: 20px; /* Add margin at the bottom */
+        }
+        footer {
+            background-color: #285902; /* Dark green footer to match header */
+            color: #fff; /* White text color */
+            padding: 10px 0; /* Standard padding for footer */
+            margin-top: auto;
+        }
+        .student-info {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        /* Custom styles for API Documentation and Upload Document sections */
+        .api-docs,
+        .upload-doc {
+            background-color: #fff; /* White background for sections */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .api-docs h3,
+        .upload-doc h3 {
+            font-weight: bold; /* Make the heading bold */
+        }
+        /* Adjust file input width */
+        #fileInput {
+            width: auto; /* Allow the width to adjust based on content */
+            display: inline-block; /* Ensure inline display for width adjustment */
+        }
+        /* Button styles */
+        .btn-primary {
+            background-color: #007bff; /* Blue primary button */
+            border-color: #007bff;
+            padding: 10px 20px; /* Increased padding for better click target */
+            font-size: 16px; /* Increased font size for better visibility */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            border-color: #0056b3;
+        }
     </style>
-  </head>
-  <body>
-    <!-- Header -->
-    <header>
-      <div class="container">
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
         <h1 class="text-center">Azure AI Document Intelligence - Simple text extraction</h1>
         <p style="text-align: center">
-          ITIS 6177 - System Integration - Final Project - Vignesh Babu Rajendran
+            ITIS 6177 - System Integration - Final Project - Vignesh Babu Rajendran
         </p>
-      </div>
-    </header>
+    </div>
+</header>
 
-    <div class="container">
-      <div class="row mt-4">
-        <!-- Upload Document Section -->
-        <div class="col-md-6">
-          <form id="uploadForm" enctype="multipart/form-data">
-            <div class="form-group">
-              <label for="fileInput">Upload Document (.jpg, .jpeg, .png, .pdf):</label>
-              <input
-                type="file"
-                class="form-control-file"
-                id="fileInput"
-                accept=".jpg, .jpeg, .png, .pdf"
-              />
+<div class="container">
+    <div class="row justify-content-center mt-4">
+        <!-- API Documentation Section -->
+        <div class="col-md-6 text-center">
+            <div class="api-docs">
+                <h3><strong>API Documentation</strong></h3>
+                <p>Access the API documentation (Swagger) <a href="/api-docs" target="_blank" style="color: #007bff;">here</a>.</p>
             </div>
-            <button type="submit" class="btn btn-primary">Extract Text</button>
-          </form>
-          <!-- Spinner -->
-
-          <div class="spinner-border-container" style="margin-top: 10px">
-            <div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-
-          <div
-            class="output-container mt-4"
-            id="outputContainer"
-            style="display: none"
-          >
-            <h3>Extracted Text:</h3>
-            <pre id="outputText" style="white-space: pre-wrap;"></pre>></pre>
-          </div>
         </div>
-        <div class="col-md-6">
-          <div class="api-docs">
-            <!-- Add API documentation review content here -->
-            <h3>API Documentation</h3>
-            <iframe src="http://localhost:3000/api-docs/" frameborder="0" width="600" height="600"></iframe>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-      <div class="container">
+    <div class="row justify-content-center mt-4">
+        <!-- Upload Document Section -->
+        <div class="col-md-6 text-center">
+            <div class="upload-doc">
+                <h3><strong>Upload Document</strong></h3>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="fileInput">Choose Document (.jpg, .jpeg, .png, .pdf):</label>
+                        <br>
+                        <input
+                            type="file"
+                            class="form-control-file mx-auto"
+                            id="fileInput"
+                            accept=".jpg, .jpeg, .png, .pdf"
+                        />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Extract Text</button>
+                </form>
+            </div>
+            <!-- Spinner -->
+            <div class="spinner-border-container mt-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Output Container -->
+            <div class="output-container mt-4" id="outputContainer" style="display: none;">
+                <h3>Text extracted from file:</h3>
+                <pre id="outputText" style="white-space: pre-wrap;"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
         <p class="text-center">
-          ITIS 6177 - System Integration - Final Project - Vignesh Babu Rajendran
+            Authored by Vignesh Babu Rajendran for ITIS 6177 - System Integration - Final Project
         </p>
-      </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script>
-      document
-        .getElementById("uploadForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault(); // Prevent default form submission
+<script>
+    document.getElementById("uploadForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
 
-          // Get the file input element
-          const fileInput = document.getElementById("fileInput");
-          const file = fileInput.files[0];
+        // Get the file input element
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
 
-          if (!file) {
+        if (!file) {
             alert("Please select a file.");
             return;
-          }
+        }
 
-          // Show spinner
-          document.querySelector(".spinner-border-container").style.display =
-            "block";
+        // Show spinner
+        document.querySelector(".spinner-border-container").style.display = "block";
 
-          // Create FormData object and append the file
-          const formData = new FormData();
-          formData.append("file", file);
+        // Create FormData object and append the file	
+        const formData = new FormData();
+        formData.append("file", file);
 
-          // Send a POST request to server (Replace with your server endpoint)
-          fetch("/extractText", {
+        // Send a POST request to server (Replace with your server endpoint)
+        fetch("/textExtract", {
             method: "POST",
             body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              // Hide spinner
-              document.querySelector(
-                ".spinner-border-container"
-              ).style.display = "none";
-
-              // Display extracted text on the page
-              document.getElementById("outputText").textContent =
-                JSON.stringify(data, null, 2);
-              document.getElementById("outputContainer").style.display =
-                "block";
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              alert("An error occurred. Please try again.");
-              // Hide spinner in case of error
-              document.querySelector(
-                ".spinner-border-container"
-              ).style.display = "none";
-            });
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            // Hide spinner
+            document.querySelector(".spinner-border-container").style.display = "none";
+            // Display extracted text on the page
+            document.getElementById("outputText").textContent = JSON.stringify(data, null, 2);
+            document.getElementById("outputContainer").style.display = "block";
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+            // Hide spinner in case of error
+            document.querySelector(".spinner-border-container").style.display = "none";
         });
-    </script>
-  </body>
+    });
+</script>
+
+</body>
 </html>
