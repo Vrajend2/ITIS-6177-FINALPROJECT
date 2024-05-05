@@ -1,4 +1,4 @@
-# Azure AI Document Intelligence - Simple Text Extraction
+# Simple Text Extraction using Azure AI Document Intelligence
 
 This project demonstrates a Node.js application that uses Azure AI Document Intelligence to extract text from documents. It provides a RESTful API endpoint to upload documents and retrieve the extracted text.
 

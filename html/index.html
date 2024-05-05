@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azure AI Document Intelligence - Text Extraction</title>
+    <title>Simple Text Extraction using Azure AI Document Intelligence</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -12,7 +12,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #f8f9fa; /* Light gray background */
+            background-color: #6965e8; /* Light blue background */
             color: #333; /* Dark text color */
         }
         .output-container {
@@ -23,21 +23,14 @@
         }
         /* Header and footer styles */
         header {
-            background-color: #285902; /* Dark green header */
             color: #fff; /* White text color */
             padding: 20px 0; /* Increased padding for header */
             margin-bottom: 20px; /* Add margin at the bottom */
         }
         footer {
-            background-color: #285902; /* Dark green footer to match header */
             color: #fff; /* White text color */
             padding: 10px 0; /* Standard padding for footer */
             margin-top: auto;
-        }
-        .student-info {
-            background-color: #f0f0f0;
-            padding: 10px;
-            margin-bottom: 20px;
         }
         /* Custom styles for API Documentation and Upload Document sections */
         .api-docs,
@@ -52,10 +45,23 @@
         .upload-doc h3 {
             font-weight: bold; /* Make the heading bold */
         }
-        /* Adjust file input width */
-        #fileInput {
-            width: auto; /* Allow the width to adjust based on content */
-            display: inline-block; /* Ensure inline display for width adjustment */
+        /* Adjust file input width and style */
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px; /* Increased padding for better appearance */
+            cursor: pointer;
+            background-color: #e4dfdfe7; /* Grey silver background */
+            color: #686868; /* Dark text color */
+            border: 2px solid #808080; /* Dark grey border */
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .custom-file-upload:hover {
+            background-color:   #a9a9a9; /* Darker grey on hover */
+            border-color: #595959; /* Darker border on hover */
+            color: #fff; /* White text color on hover */
         }
         /* Button styles */
         .btn-primary {
@@ -63,10 +69,15 @@
             border-color: #007bff;
             padding: 10px 20px; /* Increased padding for better click target */
             font-size: 16px; /* Increased font size for better visibility */
+            font-weight: bold; /* Make the button text bold */
         }
         .btn-primary:hover {
-            background-color: #0056b3; /* Darker blue on hover */
-            border-color: #0056b3;
+            background-color: #08f838; /* Darker blue on hover */
+            border-color: #08f838;
+        }
+        /* Custom spinner color */
+        .spinner-border {
+            color: red !important; /* Red color for spinner */
         }
     </style>
 </head>
@@ -74,7 +85,7 @@
 <!-- Header -->
 <header>
     <div class="container">
-        <h1 class="text-center">Azure AI Document Intelligence - Simple text extraction</h1>
+        <h1 class="text-center">Simple Text Extraction using Azure AI Document Intelligence</h1>
         <p style="text-align: center">
             ITIS 6177 - System Integration - Final Project - Vignesh Babu Rajendran
         </p>
@@ -86,8 +97,8 @@
         <!-- API Documentation Section -->
         <div class="col-md-6 text-center">
             <div class="api-docs">
-                <h3><strong>API Documentation</strong></h3>
-                <p>Access the API documentation (Swagger) <a href="/api-docs" target="_blank" style="color: #007bff;">here</a>.</p>
+                <h3><strong>API Documentation - Swagger</strong></h3>
+                <p>Access the API documentation <a href="/api-docs" target="_blank" style="color: #007bff;">here</a>!</p>
             </div>
         </div>
     </div>
@@ -96,19 +107,22 @@
         <!-- Upload Document Section -->
         <div class="col-md-6 text-center">
             <div class="upload-doc">
-                <h3><strong>Upload Document</strong></h3>
+                <h3><strong>Upload Document to Extract Text</strong></h3>
                 <form id="uploadForm" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="fileInput">Choose Document (.jpg, .jpeg, .png, .pdf):</label>
-                        <br>
-                        <input
-                            type="file"
-                            class="form-control-file mx-auto"
-                            id="fileInput"
-                            accept=".jpg, .jpeg, .png, .pdf"
-                        />
-                    </div>
-                    <button type="submit" class="btn btn-primary">Extract Text</button>
+                    <!-- Custom file input -->
+                    <label for="fileInput" class="custom-file-upload">Select file (supported formats: .pdf, .png, .jpg, .jpeg)</label>
+                    <input
+                        type="file"
+                        id="fileInput"
+                        accept=".jpg, .jpeg, .png, .pdf"
+                        style="display: none;"
+                        onchange="displayFileName(this)"
+                    />
+                    <br>
+                    <!-- Display selected file name -->
+                    <div id="fileNameDisplay" style="display: none; font-size: 14px; margin-top: 10px;"></div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">SUBMIT</button>
                 </form>
             </div>
             <!-- Spinner -->
@@ -129,8 +143,7 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <p class="text-center">
-            Authored by Vignesh Babu Rajendran for ITIS 6177 - System Integration - Final Project
+        <p class="text-center" style="color: #fff;">
         </p>
     </div>
 </footer>
@@ -141,6 +154,19 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
+    // Function to display selected file name
+    function displayFileName(input) {
+        const fileNameDisplay = document.getElementById("fileNameDisplay");
+        if (input.files.length > 0) {
+            const fileName = input.files[0].name;
+            fileNameDisplay.textContent = "Selected file: " + fileName;
+            fileNameDisplay.style.display = "block";
+        } else {
+            fileNameDisplay.textContent = "";
+            fileNameDisplay.style.display = "none";
+        }
+    }
+
     // JavaScript code for handling form submission
     document.getElementById("uploadForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent default form submission
@@ -157,7 +183,7 @@
         // Display loading spinner
         document.querySelector(".spinner-border-container").style.display = "block";
 
-        // Create FormData object and append the file	
+        // Create FormData object and append the file    
         const formData = new FormData();
         formData.append("file", file);
 

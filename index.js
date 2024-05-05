@@ -48,7 +48,7 @@ const upload = multer({ dest: 'html/uploads/' });
 const swaggerOptions = {
     swaggerDefinition: {
         info: {
-            title: 'Azure AI Document Intelligence - Simple text extraction',
+            title: 'Simple Text Extraction using Azure AI Document Intelligence',
             description: 'Authored by Vignesh Babu Rajendran for ITIS 6177 - System Integration - Final Project',
             version: '1.0.0'
         },
