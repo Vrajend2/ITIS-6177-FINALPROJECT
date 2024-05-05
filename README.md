@@ -49,37 +49,36 @@ Before running this application, ensure you have the following prerequisites ins
 ssh root@159.223.148.167
 
 # Update and install necessary packages
-yum update
-yum install epel-release yum-utils -y
-yum install nginx -y
-systemctl start nginx
-systemctl enable nginx
-yum install firewalld -y
-systemctl start firewalld
-systemctl enable firewalld
-firewall-cmd --permanent --zone=public --add-service=http
-firewall-cmd --permanent --zone=public --add-service=https
-firewall-cmd --zone=public --add-port=3000/tcp --permanent
-firewall-cmd --reload
-yum makecache
-yum install git -y
+- yum update
+- yum install epel-release yum-utils -y
+- yum install nginx -y
+- systemctl start nginx
+- systemctl enable nginx
+- yum install firewalld -y
+- systemctl start firewalld
+- systemctl enable firewalld
+- firewall-cmd --permanent --zone=public --add-service=http
+- firewall-cmd --permanent --zone=public --add-service=https
+- firewall-cmd --zone=public --add-port=3000/tcp --permanent
+- firewall-cmd --reload
+- yum makecache
+- yum install git -y
 
 # Install Node.js and other dependencies
-curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
-yum install nodejs -y
-git clone https://github.com/Vrajend2/ITIS-6177-FINALPROJECT.git
-sudo cp -r . /usr/share/nginx/html
-sudo systemctl restart nginx
+- curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+- yum install nodejs -y
+- git clone https://github.com/Vrajend2/ITIS-6177-FINALPROJECT.git
+- sudo cp -r . /usr/share/nginx/html
+- sudo systemctl restart nginx
 
 # Install project dependencies and start the application
-cd /usr/share/nginx/html
-npm install
-pm2 start index.js
+- cd /usr/share/nginx/html
+- npm install
+- pm2 start index.js
 
-Feel free to customize the instructions and commands according to your specific deployment requirements and environment.
+# Feel free to customize the instructions and commands according to your specific deployment requirements and environment.
 
-Author: Vignesh Babu Rajendran
-Course: ITIS 6177 - System Integration - Final Project
-
+# Author: Vignesh Babu Rajendran
+# Course: ITIS 6177 - System Integration - Final Project
 
 This README.md file provides clear instructions on how to install and use your Node.js application for text extraction using Azure AI Document Intelligence. It also includes steps for deploying the application on a server and setting up necessary configurations. You can further refine and expand this documentation based on your project's specific needs and deployment environment.
