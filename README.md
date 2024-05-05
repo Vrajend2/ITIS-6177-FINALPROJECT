@@ -76,9 +76,18 @@ ssh root@159.223.148.167
 - npm install
 - pm2 start index.js
 
-#### Accomplished this project as per the project requirements and instructions.
+### Accomplishment
+
+This project has been accomplished as per the project requirements and instructions.
+- Requirements(MSIT2/GCIT) - Meets all design requirements.
+- Elements(MSIT2/GCIT) - Chosen appropriate elements.
+- DesignChoice(MSIT2/GCIT) - Justified the design choices.
+- Clarity(MSIT2/GCIT) - Clear expressions.
+- Organization(MSIT2/GCIT) - Documented Clear and logical flow of information.
+
 
 #### Author: Vignesh Babu Rajendran
 #### Course: ITIS 6177 - System Integration - Final Project
+
 
 This README.md file provides clear instructions on how to install and use your Node.js application for text extraction using Azure AI Document Intelligence. It also includes steps for deploying the application on a server and setting up necessary configurations.
