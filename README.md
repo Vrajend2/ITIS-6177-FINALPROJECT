@@ -76,14 +76,14 @@ ssh root@159.223.148.167
 - npm install
 - pm2 start index.js
 
-### Accomplishment
+## Accomplishment
 
 This project has been accomplished as per the project requirements and instructions.
 - Requirements(MSIT2/GCIT) - Meets all design requirements.
 - Elements(MSIT2/GCIT) - Chosen appropriate elements.
 - DesignChoice(MSIT2/GCIT) - Justified the design choices.
 - Clarity(MSIT2/GCIT) - Clear expressions.
-- Organization(MSIT2/GCIT) - Documented Clear and logical flow of information.
+- Organization(MSIT2/GCIT) - Clearly documented the logical flow of information.
 
 
 #### Author: Vignesh Babu Rajendran
