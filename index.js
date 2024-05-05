@@ -52,7 +52,7 @@ const swaggerOptions = {
       version: '1.0.0'
     },
     servers: [{
-      url: 'http://localhost:3000',
+      url: 'http://159.223.148.167:3000',
       description: 'Project server'
     }]
   },
