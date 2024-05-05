@@ -37,11 +37,11 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Serve static files from 'html' directory
-app.use(express.static('html')); 
+// Serve static files from 'public' directory
+app.use(express.static('public')); 
 
 // Configure Multer for handling file uploads
-const upload = multer({ dest: 'html/uploads/' });
+const upload = multer({ dest: 'public/uploads/' });
 
 // Swagger definition
 const swaggerOptions = {
@@ -106,7 +106,7 @@ app.post('/textExtract', upload.single('file'), async (req, res) => {
 
     try {
         // Construct the local file path
-        const filePath = path.join(__dirname, 'html', 'uploads', file.filename);
+        const filePath = path.join(__dirname, 'public', 'uploads', file.filename);
 
         // Perform text extraction using Azure AI Document Intelligence
         const fileStream = fs.createReadStream(filePath);
