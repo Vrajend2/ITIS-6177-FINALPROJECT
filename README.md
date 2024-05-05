@@ -81,4 +81,4 @@ ssh root@159.223.148.167
 #### Author: Vignesh Babu Rajendran
 #### Course: ITIS 6177 - System Integration - Final Project
 
-This README.md file provides clear instructions on how to install and use your Node.js application for text extraction using Azure AI Document Intelligence. It also includes steps for deploying the application on a server and setting up necessary configurations. You can further refine and expand this documentation based on your project's specific needs and deployment environment.
+This README.md file provides clear instructions on how to install and use your Node.js application for text extraction using Azure AI Document Intelligence. It also includes steps for deploying the application on a server and setting up necessary configurations.
