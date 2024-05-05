@@ -1,3 +1,4 @@
+// Import required modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
@@ -27,37 +28,36 @@ const secretKey = 'your_secret_key_here'; // Replace with your actual secret key
 const decryptedEndpoint = decryptValue(encryptedEndpoint, secretKey);
 const decryptedApiKey = decryptValue(encryptedApiKey, secretKey);
 
-// Now you can use the decrypted values in your application
+// Initialize DocumentAnalysisClient with decrypted credentials
 const documentAnalysisClient = new DocumentAnalysisClient(decryptedEndpoint, new AzureKeyCredential(decryptedApiKey));
 
-
+// Create an Express application
 const app = express();
 
-// Middleware
+// Middleware for parsing request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Serve static files from 'public' directory
-app.use(express.static('public')); 
+// Serve static files from 'html' directory
+app.use(express.static('html'));
 
 // Configure Multer for handling file uploads
-const upload = multer({ dest: 'public/uploads/' });
+const upload = multer({ dest: 'html/uploads/' });
 
-// Swagger definition
+// Swagger definition and setup
 const swaggerOptions = {
-  swaggerDefinition: {
-    info: {
-      title: 'Azure AI Document Intelligence - Simple text extraction',
-      description: 'Authored by Vignesh Babu Rajendran for ITIS 6177 - System Integration - Final Project',
-      version: '1.0.0'
+    swaggerDefinition: {
+        info: {
+            title: 'Azure AI Document Intelligence - Simple text extraction',
+            description: 'Authored by Vignesh Babu Rajendran for ITIS 6177 - System Integration - Final Project',
+            version: '1.0.0'
+        },
+        servers: [{
+            url: 'http://159.223.148.167:3000',
+            description: 'Project server'
+        }]
     },
-    servers: [{
-      url: 'http://159.223.148.167:3000',
-      description: 'Project server'
-    }]
-  },
-  // Specify the file(s) that contain your route definitions and annotations
-  apis: ['index.js'] // Assuming 'index.js' contains your route definitions
+    apis: ['index.js'] // Assuming 'index.js' contains your route definitions
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
@@ -106,11 +106,10 @@ app.post('/textExtract', upload.single('file'), async (req, res) => {
 
     try {
         // Construct the local file path
-        const filePath = path.join(__dirname, 'public', 'uploads', file.filename);
+        const filePath = path.join(__dirname, 'html', 'uploads', file.filename);
 
         // Perform text extraction using Azure AI Document Intelligence
         const fileStream = fs.createReadStream(filePath);
-        const documentAnalysisClient = new DocumentAnalysisClient(decryptedEndpoint, new AzureKeyCredential(decryptedApiKey));
         const poller = await documentAnalysisClient.beginAnalyzeDocument("prebuilt-read", fileStream);
         const { content } = await poller.pollUntilDone();
 
@@ -127,7 +126,7 @@ app.post('/textExtract', upload.single('file'), async (req, res) => {
     }
 });
 
-// Start the server
+// Start the Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

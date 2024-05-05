@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Styling for the page */  
         body {
             display: flex;
             flex-direction: column;
@@ -20,7 +21,7 @@
         .spinner-border-container {
             display: none;
         }
-        /* Custom styles for header and footer */
+        /* Header and footer styles */
         header {
             background-color: #285902; /* Dark green header */
             color: #fff; /* White text color */
@@ -140,10 +141,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
+    // JavaScript code for handling form submission
     document.getElementById("uploadForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        // Get the file input element
+        // Get the selected file from the input
         const fileInput = document.getElementById("fileInput");
         const file = fileInput.files[0];
 
@@ -152,14 +154,14 @@
             return;
         }
 
-        // Show spinner
+        // Display loading spinner
         document.querySelector(".spinner-border-container").style.display = "block";
 
         // Create FormData object and append the file	
         const formData = new FormData();
         formData.append("file", file);
 
-        // Send a POST request to server (Replace with your server endpoint)
+        // Send POST request to server for text extraction
         fetch("/textExtract", {
             method: "POST",
             body: formData,
